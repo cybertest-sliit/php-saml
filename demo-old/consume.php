@@ -10,7 +10,14 @@
 $settings = null;
 require 'settings.php';
 
-$samlResponse = new OneLogin_Saml_Response($settings, $_POST['SAMLResponse']);
+if (
+        isset($_POST['SAMLResponse']) &&
+        isset($_POST['nonce']) &&
+		wp_verify_nonce( sanitize_key( $_SERVER['nonce'] ), 'SAMLResponse'
+){
+	$SAMLResponse = $_POST['SAMLResponse']
+}
+$samlResponse = new OneLogin_Saml_Response($settings, $SAMLResponse)
 
 try {
     if ($samlResponse->isValid()) {

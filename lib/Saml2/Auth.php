@@ -256,7 +256,11 @@ class OneLogin_Saml2_Auth
     {
         $this->_errors = array();
         $this->_errorReason = null;
-        if (isset($_GET['SAMLResponse'])) {
+      if (
+        isset($_GET['SAMLResponse']) &&
+        isset($_GET['nonce']) &&
+		wp_verify_nonce( sanitize_key( $_SERVER['nonce'] ), 'SAMLResponse'
+) {
             $logoutResponse = new OneLogin_Saml2_LogoutResponse($this->_settings, $_GET['SAMLResponse']);
             $this->_lastResponse = $logoutResponse->getXML();
             if (!$logoutResponse->isValid($requestId, $retrieveParametersFromServer)) {

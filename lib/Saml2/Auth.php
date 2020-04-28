@@ -204,7 +204,11 @@ class OneLogin_Saml2_Auth
     {
         $this->_errors = array();
         $this->_errorReason = null;
-        if (isset($_POST['SAMLResponse'])) {
+       if (
+        isset($_POST['SAMLResponse']) &&
+        isset($_POST['nonce']) &&
+		wp_verify_nonce( sanitize_key( $_SERVER['nonce'] ), 'SAMLResponse'
+        )) {
             // AuthnResponse -- HTTP_POST Binding
             $response = new OneLogin_Saml2_Response($this->_settings, $_POST['SAMLResponse']);
             $this->_lastResponse = $response->getXMLDocument();

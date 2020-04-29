@@ -312,7 +312,7 @@ class OneLogin_Saml2_LogoutResponseTest extends PHPUnit_Framework_TestCase
         $settings = new OneLogin_Saml2_Settings($settingsInfo);
 
         $_GET['SigAlg'] = $oldSigAlg;
-        $oldSignature = sanitize_key($_GET['Signature']);
+        $oldSignature = isset($_GET['Signature']);
         unset($_GET['Signature']);
         $_GET['SAMLResponse'] = base64_encode(gzdeflate($plainMessage6));
         $response9 = new OneLogin_Saml2_LogoutResponse($settings,sanitize_key( $_GET['SAMLResponse']));

@@ -259,7 +259,7 @@ class OneLogin_Saml2_Auth
       if (
         isset($_GET['SAMLResponse']) &&
         isset($_GET['nonce']) &&
-		wp_verify_nonce( isset( $_SERVER['nonce'] ), 'SAMLResponse'
+		wp_verify_nonce( sanitize_text_field( $_SERVER['nonce'] ), 'SAMLResponse'
 ) {
             $logoutResponse = new OneLogin_Saml2_LogoutResponse($this->_settings, sanitize_key($_GET['SAMLResponse']));
             $this->_lastResponse = $logoutResponse->getXML();

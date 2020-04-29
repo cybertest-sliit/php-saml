@@ -29,14 +29,14 @@ if(
 	isset( $_GET['slo'])
 	&& wp_verify_nonce(sanitize_key($_GET['slo']), 'slo_action')
   ){
-  		$slo = $_GET['slo'];
+  		$slo = sanitize_key($_GET['slo']);
   }
 
 if(
 	isset( $_GET['acs'])
-	&& wp_verify_nonce($_GET['acs'], 'acs_action')
+	&& wp_verify_nonce(sanitize_key($_GET['acs']), 'acs_action')
   ){
-  		$acs = $_GET['acs'];
+  		$acs =sanitize_key( $_GET['acs']);
   }
 
 if ($sso) {

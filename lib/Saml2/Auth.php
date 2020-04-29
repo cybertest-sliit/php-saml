@@ -339,9 +339,15 @@ class OneLogin_Saml2_Auth
     {
         assert('is_string($url)');
         assert('is_array($parameters)');
+if(
+	isset( $_REQUEST['RelayState'])
+	&& wp_verify_nonce($_REQUEST['RelayState'], 'RelayState_action')
+  ){
+  		$RelayState = $_REQUEST['RelayState'];
+  }
 
-        if (empty($url) && isset($_REQUEST['RelayState'])) {
-            $url = $_REQUEST['RelayState'];
+        if (empty($url) && $RelayState) {
+            $url = $RelayState;
         }
 
         return OneLogin_Saml2_Utils::redirect($url, $parameters, $stay);

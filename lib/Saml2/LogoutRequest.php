@@ -409,7 +409,7 @@ LOGOUTREQUEST;
 
           if(
 	isset( $_GET['SAMLResponse'])
-	&& wp_verify_nonce($_GET['SAMLResponse'], 'SAMLResponse_action')
+	&& wp_verify_nonce(sanitize_key($_GET['SAMLResponse']), 'SAMLResponse_action')
   ) {
                 $signatureValid = OneLogin_Saml2_Utils::validateBinarySign("SAMLRequest", $_GET, $idpData, $retrieveParametersFromServer);
                 if (!$signatureValid) {

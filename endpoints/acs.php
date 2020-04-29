@@ -28,8 +28,8 @@ $_SESSION['samlUserdata'] = $auth->getAttributes();
 $_SESSION['IdPSessionIndex'] = $auth->getSessionIndex();
 
 if(
-	isset( sanitize_text_field($_POST['RelayState']))
-	&& wp_verify_nonce($_POST['RelayState'], 'RelayState_action')
+	isset( $_POST['RelayState'])
+	&& wp_verify_nonce(sanitize_text_field($_POST['RelayState']), 'RelayState_action')
   ){
   		$RelayState = $_POST['RelayState'];
   }

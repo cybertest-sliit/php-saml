@@ -13,9 +13,9 @@ $auth = new OneLogin_Saml2_Auth($settingsInfo);
 
 if(
 	isset( $_GET['sso'])
-	&& wp_verify_nonce($_GET['sso'], 'sso_action')
+	&& wp_verify_nonce(sanitize_key($_GET['sso']), 'sso_action')
   ){
-  		$sso = $_GET['sso'];
+  		$sso = sanitize_key($_GET['sso']);
   }
 
 if(

@@ -264,7 +264,7 @@ class OneLogin_Saml2_LogoutResponseTest extends PHPUnit_Framework_TestCase
         $this->assertContains('Invalid issuer in the Logout Response', $response2->getError());
 
         $this->_settings->setStrict(false);
-        $oldSignature = $_GET['Signature'];
+        $oldSignature = sanitize_key($_GET['Signature']);
         $_GET['Signature'] = 'vfWbbc47PkP3ejx4bjKsRX7lo9Ml1WRoE5J5owF/0mnyKHfSY6XbhO1wwjBV5vWdrUVX+xp6slHyAf4YoAsXFS0qhan6txDiZY4Oec6yE+l10iZbzvie06I4GPak4QrQ4gAyXOSzwCrRmJu4gnpeUxZ6IqKtdrKfAYRAcVf3333=';
         $response3 = new OneLogin_Saml2_LogoutResponse($this->_settings, $SAMLResponse);
 
@@ -272,12 +272,12 @@ class OneLogin_Saml2_LogoutResponseTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Signature validation failed. Logout Response rejected', $response3->getError());
 
         $_GET['Signature'] = $oldSignature;
-        $oldSigAlg = sanitize_key($_GET['SigAlg']);
+        $oldSigAlg = isset($_GET['SigAlg']);
         unset($_GET['SigAlg']);
         $response4 = new OneLogin_Saml2_LogoutResponse($this->_settings, $SAMLResponse);
         $this->assertTrue($response4->isValid());
 
-        $oldRelayState = sanitize_key($_GET['RelayState']);
+        $oldRelayState = isset($_GET['RelayState']);
         $_GET['RelayState'] = 'http://example.com/relaystate';
         $response5 = new OneLogin_Saml2_LogoutResponse($this->_settings, $SAMLResponse);
         $this->assertFalse($response5->isValid());
@@ -312,10 +312,10 @@ class OneLogin_Saml2_LogoutResponseTest extends PHPUnit_Framework_TestCase
         $settings = new OneLogin_Saml2_Settings($settingsInfo);
 
         $_GET['SigAlg'] = $oldSigAlg;
-        $oldSignature = sanitize_key($_GET['Signature']);
+        $oldSignature = isset($_GET['Signature']);
         unset($_GET['Signature']);
         $_GET['SAMLResponse'] = base64_encode(gzdeflate($plainMessage6));
-        $response9 = new OneLogin_Saml2_LogoutResponse($settings, $_GET['SAMLResponse']);
+        $response9 = new OneLogin_Saml2_LogoutResponse($settings,sanitize_key( $_GET['SAMLResponse']));
         $this->assertFalse($response9->isValid());
         $this->assertEquals('The Message of the Logout Response is not signed and the SP requires it', $response9->getError());
 

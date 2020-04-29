@@ -739,7 +739,7 @@ class OneLogin_Saml2_LogoutRequestTest extends PHPUnit_Framework_TestCase
         $this->assertContains('The LogoutRequest was received at', $logoutRequest2->getError());
 
         $this->_settings->setStrict(false);
-        $oldSignature = sanitize_key($_GET['Signature']);
+        $oldSignature = isset($_GET['Signature']);
         $_GET['Signature'] = 'vfWbbc47PkP3ejx4bjKsRX7lo9Ml1WRoE5J5owF/0mnyKHfSY6XbhO1wwjBV5vWdrUVX+xp6slHyAf4YoAsXFS0qhan6txDiZY4Oec6yE+l10iZbzvie06I4GPak4QrQ4gAyXOSzwCrRmJu4gnpeUxZ6IqKtdrKfAYRAcVf3333=';
 
         $logoutRequest3 = new OneLogin_Saml2_LogoutRequest($this->_settings, $encodedRequest);

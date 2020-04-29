@@ -248,18 +248,25 @@ class OneLogin_Saml2_LogoutResponseTest extends PHPUnit_Framework_TestCase
             'Signature' => 'vfWbbc47PkP3ejx4bjKsRX7lo9Ml1WRoE5J5owF/0mnyKHfSY6XbhO1wwjBV5vWdrUVX+xp6slHyAf4YoAsXFS0qhan6txDiZY4Oec6yE+l10iZbzvie06I4GPak4QrQ4gAyXOSzwCrRmJu4gnpeUxZ6IqKtdrKfAYRAcVfNKGA='
         );
 
-        $response = new OneLogin_Saml2_LogoutResponse($this->_settings, $_GET['SAMLResponse']);
+            if(
+	isset( $_GET['SAMLResponse'])
+	&& wp_verify_nonce($_GET['SAMLResponse'], 'SAMLResponse_action')
+    ){
+    	$SAMLResponse = $_GET['SAMLResponse'];
+    }
+        
+        $response = new OneLogin_Saml2_LogoutResponse($this->_settings, $SAMLResponse);
         $this->assertTrue($response->isValid());
 
         $this->_settings->setStrict(true);
-        $response2 = new OneLogin_Saml2_LogoutResponse($this->_settings, $_GET['SAMLResponse']);
+        $response2 = new OneLogin_Saml2_LogoutResponse($this->_settings, $SAMLResponse);
         $this->assertFalse($response2->isValid());
         $this->assertContains('Invalid issuer in the Logout Response', $response2->getError());
 
         $this->_settings->setStrict(false);
         $oldSignature = $_GET['Signature'];
         $_GET['Signature'] = 'vfWbbc47PkP3ejx4bjKsRX7lo9Ml1WRoE5J5owF/0mnyKHfSY6XbhO1wwjBV5vWdrUVX+xp6slHyAf4YoAsXFS0qhan6txDiZY4Oec6yE+l10iZbzvie06I4GPak4QrQ4gAyXOSzwCrRmJu4gnpeUxZ6IqKtdrKfAYRAcVf3333=';
-        $response3 = new OneLogin_Saml2_LogoutResponse($this->_settings, $_GET['SAMLResponse']);
+        $response3 = new OneLogin_Saml2_LogoutResponse($this->_settings, $SAMLResponse);
 
         $this->assertFalse($response3->isValid());
         $this->assertEquals('Signature validation failed. Logout Response rejected', $response3->getError());
@@ -267,33 +274,33 @@ class OneLogin_Saml2_LogoutResponseTest extends PHPUnit_Framework_TestCase
         $_GET['Signature'] = $oldSignature;
         $oldSigAlg = $_GET['SigAlg'];
         unset($_GET['SigAlg']);
-        $response4 = new OneLogin_Saml2_LogoutResponse($this->_settings, $_GET['SAMLResponse']);
+        $response4 = new OneLogin_Saml2_LogoutResponse($this->_settings, $SAMLResponse);
         $this->assertTrue($response4->isValid());
 
         $oldRelayState = $_GET['RelayState'];
         $_GET['RelayState'] = 'http://example.com/relaystate';
-        $response5 = new OneLogin_Saml2_LogoutResponse($this->_settings, $_GET['SAMLResponse']);
+        $response5 = new OneLogin_Saml2_LogoutResponse($this->_settings, $SAMLResponse);
         $this->assertFalse($response5->isValid());
         $this->assertEquals('Signature validation failed. Logout Response rejected', $response5->getError());
 
         $this->_settings->setStrict(true);
 
-        $plainMessage6 = gzinflate(base64_decode($_GET['SAMLResponse']));
+        $plainMessage6 = gzinflate(base64_decode($SAMLResponse));
         $plainMessage6 = str_replace('https://pitbulk.no-ip.org/newonelogin/demo1/index.php?sls', $currentURL, $plainMessage6);
         $plainMessage6 = str_replace('https://pitbulk.no-ip.org/simplesaml/saml2/idp/metadata.php', 'http://idp.example.com/', $plainMessage6);
         $_GET['SAMLResponse'] = base64_encode(gzdeflate($plainMessage6));
 
-        $response6 = new OneLogin_Saml2_LogoutResponse($this->_settings, $_GET['SAMLResponse']);
+        $response6 = new OneLogin_Saml2_LogoutResponse($this->_settings, $SAMLResponse);
         $this->assertFalse($response6->isValid());
         $this->assertEquals('Signature validation failed. Logout Response rejected', $response6->getError());
 
         $this->_settings->setStrict(false);
-        $response7 = new OneLogin_Saml2_LogoutResponse($this->_settings, $_GET['SAMLResponse']);
+        $response7 = new OneLogin_Saml2_LogoutResponse($this->_settings, $SAMLResponse);
         $this->assertFalse($response7->isValid());
         $this->assertEquals('Signature validation failed. Logout Response rejected', $response7->getError());
 
         $_GET['SigAlg'] = 'http://www.w3.org/2000/09/xmldsig#dsa-sha1';
-        $response8 = new OneLogin_Saml2_LogoutResponse($this->_settings, $_GET['SAMLResponse']);
+        $response8 = new OneLogin_Saml2_LogoutResponse($this->_settings, $SAMLResponse);
         $this->assertFalse($response8->isValid());
         $this->assertEquals('Invalid signAlg in the recieved Logout Response', $response8->getError());
 

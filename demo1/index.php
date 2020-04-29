@@ -20,14 +20,14 @@ if(
 
 if(
 	isset( $_GET['sso2'])
-	&& wp_verify_nonce($_GET['sso2'], 'sso2_action')
+	&& wp_verify_nonce(sanitize_key($_GET['sso']), 'sso2_action')
   ){
-  		$sso2 = $_GET['sso2'];
+  		$sso2 = sanitize_key($_GET['sso']);
   }
 
 if(
 	isset( $_GET['slo'])
-	&& wp_verify_nonce($_GET['slo'], 'slo_action')
+	&& wp_verify_nonce(sanitize_key($_GET['slo']), 'slo_action')
   ){
   		$slo = $_GET['slo'];
   }
@@ -114,7 +114,7 @@ if ($sso) {
     $_SESSION['samlSessionIndex'] = $auth->getSessionIndex();
     unset($_SESSION['AuthNRequestID']);
     if (isset($_POST['RelayState']) && OneLogin_Saml2_Utils::getSelfURL() != $_POST['RelayState']) {
-        $auth->redirectTo($_POST['RelayState']);
+        $auth->redirectTo(sanitize_key($_POST['RelayState']));
     }
 } else if (isset($_GET['sls'])) {
     if (isset($_SESSION) && isset($_SESSION['LogoutRequestID'])) {

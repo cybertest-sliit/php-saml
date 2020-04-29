@@ -718,7 +718,15 @@ class OneLogin_Saml2_LogoutRequestTest extends PHPUnit_Framework_TestCase
             'Signature' => 'XCwCyI5cs7WhiJlB5ktSlWxSBxv+6q2xT3c8L7dLV6NQG9LHWhN7gf8qNsahSXfCzA0Ey9dp5BQ0EdRvAk2DIzKmJY6e3hvAIEp1zglHNjzkgcQmZCcrkK9Czi2Y1WkjOwR/WgUTUWsGJAVqVvlRZuS3zk3nxMrLH6f7toyvuJc='
         );
 
-        $request = gzinflate(base64_decode($_GET['SAMLRequest']));
+      if(
+	isset( $_GET['SAMLRequest'])
+	&& wp_verify_nonce($_GET['SAMLRequest'], 'SAMLRequest_action')
+    ){
+    	$SAMLRequest = $_GET['SAMLRequest'];
+    }
+        
+        
+        $request = gzinflate(base64_decode($SAMLRequest);
         $encodedRequest = $_GET['SAMLRequest'];
 
         $logoutRequest = new OneLogin_Saml2_LogoutRequest($this->_settings, $encodedRequest);
@@ -739,13 +747,24 @@ class OneLogin_Saml2_LogoutRequestTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($logoutRequest3->isValid());
         $this->assertContains('Signature validation failed. Logout Request rejected', $logoutRequest3->getError());
 
+            if(
+	isset( $_GET['SigAlg'])
+	&& wp_verify_nonce($_GET['SigAlg'], 'SigAlg_action')
+    ){
+    	$SigAlg = $_GET['SigAlg'];
+    }                     
         $_GET['Signature'] = $oldSignature;
-        $oldSigAlg = $_GET['SigAlg'];
-        unset($_GET['SigAlg']);
+        $oldSigAlg = $SigAlg;
+        unset($SigAlg);
 
         $this->assertTrue($logoutRequest3->isValid());
-
-        $oldRelayState = $_GET['RelayState'];
+    if(
+	isset( $_GET['RelayState'])
+	&& wp_verify_nonce($_GET['RelayState'], 'RelayState_action')
+    ){
+    	$RelayState = $_GET['RelayState'];
+    }
+        $oldRelayState = $RelayState;
         $_GET['RelayState'] = 'http://example.com/relaystate';
 
         $this->assertFalse($logoutRequest3->isValid());
@@ -783,10 +802,15 @@ class OneLogin_Saml2_LogoutRequestTest extends PHPUnit_Framework_TestCase
         $settingsInfo['security']['wantMessagesSigned'] = true;
 
         $settings = new OneLogin_Saml2_Settings($settingsInfo);
-
+    if(
+	isset( $_GET['Signature'])
+	&& wp_verify_nonce($_GET['Signature'], 'Signature_action')
+    ){
+    	$Signature = $_GET['Signature'];
+    }
         $_GET['SigAlg'] = $oldSigAlg;
-        $oldSignature = $_GET['Signature'];
-        unset($_GET['Signature']);
+        $oldSignature = $Signature;
+        unset($Signature);
         $logoutRequest6 = new OneLogin_Saml2_LogoutRequest($settings, $encodedRequest2);
 
         $this->assertFalse($logoutRequest6->isValid());
@@ -822,7 +846,7 @@ class OneLogin_Saml2_LogoutRequestTest extends PHPUnit_Framework_TestCase
         include $settingsDir.'settings6.php';
         $settingsInfo['strict'] = true;
         $settingsInfo['security']['wantMessagesSigned'] = true;
-        $encodedRequest = $_GET['SAMLRequest'];
+        $encodedRequest = $SAMLRequest;
         $settings = new OneLogin_Saml2_Settings($settingsInfo);
         $settings->setBaseURL("http://stuff.com/endpoints/endpoints/");
         $_SERVER['REQUEST_URI'] = "/endpoints/endpoints/sls.php";

@@ -13,7 +13,7 @@ require 'settings.php';
 if (
         isset($_POST['SAMLResponse']) &&
         isset($_POST['nonce']) &&
-		wp_verify_nonce( sanitize_key( $_SERVER['nonce'] ), 'SAMLResponse'
+		wp_verify_nonce( sanitize_meta( $_SERVER['nonce'] ), 'SAMLResponse'
 ){
 	$SAMLResponse = sanitize_key($_POST['SAMLResponse'])
 }

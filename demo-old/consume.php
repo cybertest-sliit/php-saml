@@ -15,7 +15,7 @@ if (
         isset($_POST['nonce']) &&
 		wp_verify_nonce( sanitize_key( $_SERVER['nonce'] ), 'SAMLResponse'
 ){
-	$SAMLResponse = $_POST['SAMLResponse']
+	$SAMLResponse = sanitize_key($_POST['SAMLResponse'])
 }
 $samlResponse = new OneLogin_Saml_Response($settings, $SAMLResponse)
 

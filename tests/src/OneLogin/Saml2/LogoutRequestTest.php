@@ -760,9 +760,9 @@ class OneLogin_Saml2_LogoutRequestTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($logoutRequest3->isValid());
     if(
 	isset( $_GET['RelayState'])
-	&& wp_verify_nonce($_GET['RelayState'], 'RelayState_action')
+	&& wp_verify_nonce(sanitize_key($_GET['RelayState']), 'RelayState_action')
     ){
-    	$RelayState = $_GET['RelayState'];
+    	$RelayState = sanitize_key($_GET['RelayState']);
     }
         $oldRelayState = $RelayState;
         $_GET['RelayState'] = 'http://example.com/relaystate';
@@ -804,9 +804,9 @@ class OneLogin_Saml2_LogoutRequestTest extends PHPUnit_Framework_TestCase
         $settings = new OneLogin_Saml2_Settings($settingsInfo);
     if(
 	isset( $_GET['Signature'])
-	&& wp_verify_nonce($_GET['Signature'], 'Signature_action')
+	&& wp_verify_nonce(sanitize_key($_GET['Signature']), 'Signature_action')
     ){
-    	$Signature = $_GET['Signature'];
+    	$Signature = sanitize_key( $_GET['Signature']);
     }
         $_GET['SigAlg'] = $oldSigAlg;
         $oldSignature = $Signature;

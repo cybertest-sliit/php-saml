@@ -312,7 +312,7 @@ class OneLogin_Saml2_LogoutResponseTest extends PHPUnit_Framework_TestCase
         $settings = new OneLogin_Saml2_Settings($settingsInfo);
 
         $_GET['SigAlg'] = $oldSigAlg;
-        $oldSignature = isset($_GET['Signature']);
+        $oldSignature = sanitize_key($_GET['Signature']);
         unset($_GET['Signature']);
         $_GET['SAMLResponse'] = base64_encode(gzdeflate($plainMessage6));
         $response9 = new OneLogin_Saml2_LogoutResponse($settings,sanitize_key( $_GET['SAMLResponse']));
@@ -325,7 +325,7 @@ class OneLogin_Saml2_LogoutResponseTest extends PHPUnit_Framework_TestCase
         unset($settingsInfo['idp']['x509cert']);
         $settings2 = new OneLogin_Saml2_Settings($settingsInfo);
 
-        $response10 = new OneLogin_Saml2_LogoutResponse($settings2, $_GET['SAMLResponse']);
+        $response10 = new OneLogin_Saml2_LogoutResponse($settings2, sanitize_key( $_GET['SAMLResponse']));
         $this->assertFalse($response10->isValid());
         $this->assertEquals('In order to validate the sign on the Logout Response, the x509cert of the IdP is required', $response10->getError());
     }

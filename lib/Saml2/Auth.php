@@ -207,7 +207,7 @@ class OneLogin_Saml2_Auth
        if (
         isset($_POST['SAMLResponse']) &&
         isset($_POST['nonce']) &&
-		wp_verify_nonce( sanitize_key( $_SERVER['nonce'] ), 'SAMLResponse'
+		wp_verify_nonce( isset( $_SERVER['nonce'] ), 'SAMLResponse'
         )) {
             // AuthnResponse -- HTTP_POST Binding
             $response = new OneLogin_Saml2_Response($this->_settings,sanitize_key( $_POST['SAMLResponse']));
@@ -261,7 +261,7 @@ class OneLogin_Saml2_Auth
         isset($_GET['nonce']) &&
 		wp_verify_nonce( isset( $_SERVER['nonce'] ), 'SAMLResponse'
 ) {
-            $logoutResponse = new OneLogin_Saml2_LogoutResponse($this->_settings, $_GET['SAMLResponse']);
+            $logoutResponse = new OneLogin_Saml2_LogoutResponse($this->_settings, sanitize_key($_GET['SAMLResponse']));
             $this->_lastResponse = $logoutResponse->getXML();
             if (!$logoutResponse->isValid($requestId, $retrieveParametersFromServer)) {
                 $this->_errors[] = 'invalid_logout_response';

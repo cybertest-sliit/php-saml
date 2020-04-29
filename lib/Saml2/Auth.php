@@ -210,7 +210,7 @@ class OneLogin_Saml2_Auth
 		wp_verify_nonce( sanitize_key( $_SERVER['nonce'] ), 'SAMLResponse'
         )) {
             // AuthnResponse -- HTTP_POST Binding
-            $response = new OneLogin_Saml2_Response($this->_settings, $_POST['SAMLResponse']);
+            $response = new OneLogin_Saml2_Response($this->_settings,sanitize_key( $_POST['SAMLResponse']));
             $this->_lastResponse = $response->getXMLDocument();
 
             if ($response->isValid($requestId)) {
@@ -259,7 +259,7 @@ class OneLogin_Saml2_Auth
       if (
         isset($_GET['SAMLResponse']) &&
         isset($_GET['nonce']) &&
-		wp_verify_nonce( sanitize_key( $_SERVER['nonce'] ), 'SAMLResponse'
+		wp_verify_nonce( isset( $_SERVER['nonce'] ), 'SAMLResponse'
 ) {
             $logoutResponse = new OneLogin_Saml2_LogoutResponse($this->_settings, $_GET['SAMLResponse']);
             $this->_lastResponse = $logoutResponse->getXML();
@@ -279,7 +279,7 @@ class OneLogin_Saml2_Auth
                 }
             }
         } else if (isset($_GET['SAMLRequest'])) {
-            $logoutRequest = new OneLogin_Saml2_LogoutRequest($this->_settings, $_GET['SAMLRequest']);
+            $logoutRequest = new OneLogin_Saml2_LogoutRequest($this->_settings, sanitize_key($_GET['SAMLRequest']));
             $this->_lastRequest = $logoutRequest->getXML();
             if (!$logoutRequest->isValid($retrieveParametersFromServer)) {
                 $this->_errors[] = 'invalid_logout_request';
@@ -302,7 +302,7 @@ class OneLogin_Saml2_Auth
 
                 $parameters = array('SAMLResponse' => $logoutResponse);
                 if (isset($_GET['RelayState'])) {
-                    $parameters['RelayState'] = $_GET['RelayState'];
+                    $parameters['RelayState'] = sanitize_key($_GET['RelayState']);
                 }
 
                 $security = $this->_settings->getSecurityData();
@@ -341,9 +341,9 @@ class OneLogin_Saml2_Auth
         assert('is_array($parameters)');
 if(
 	isset( $_REQUEST['RelayState'])
-	&& wp_verify_nonce($_REQUEST['RelayState'], 'RelayState_action')
+	&& wp_verify_nonce(sanitize_key($_REQUEST['RelayState']), 'RelayState_action')
   ){
-  		$RelayState = $_REQUEST['RelayState'];
+  		$RelayState = sanitize_key($_REQUEST['RelayState']);
   }
 
         if (empty($url) && $RelayState) {

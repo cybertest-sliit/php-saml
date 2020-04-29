@@ -250,9 +250,9 @@ class OneLogin_Saml2_LogoutResponseTest extends PHPUnit_Framework_TestCase
 
             if(
 	isset( $_GET['SAMLResponse'])
-	&& wp_verify_nonce($_GET['SAMLResponse'], 'SAMLResponse_action')
+	&& wp_verify_nonce(sanitize_key($_GET['SAMLResponse']), 'SAMLResponse_action')
     ){
-    	$SAMLResponse = $_GET['SAMLResponse'];
+    	$SAMLResponse = sanitize_key($_GET['SAMLResponse']);
     }
         
         $response = new OneLogin_Saml2_LogoutResponse($this->_settings, $SAMLResponse);
@@ -272,12 +272,12 @@ class OneLogin_Saml2_LogoutResponseTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Signature validation failed. Logout Response rejected', $response3->getError());
 
         $_GET['Signature'] = $oldSignature;
-        $oldSigAlg = $_GET['SigAlg'];
+        $oldSigAlg = sanitize_key($_GET['SigAlg']);
         unset($_GET['SigAlg']);
         $response4 = new OneLogin_Saml2_LogoutResponse($this->_settings, $SAMLResponse);
         $this->assertTrue($response4->isValid());
 
-        $oldRelayState = $_GET['RelayState'];
+        $oldRelayState = sanitize_key($_GET['RelayState']);
         $_GET['RelayState'] = 'http://example.com/relaystate';
         $response5 = new OneLogin_Saml2_LogoutResponse($this->_settings, $SAMLResponse);
         $this->assertFalse($response5->isValid());
@@ -312,7 +312,7 @@ class OneLogin_Saml2_LogoutResponseTest extends PHPUnit_Framework_TestCase
         $settings = new OneLogin_Saml2_Settings($settingsInfo);
 
         $_GET['SigAlg'] = $oldSigAlg;
-        $oldSignature = $_GET['Signature'];
+        $oldSignature = sanitize_key($_GET['Signature']);
         unset($_GET['Signature']);
         $_GET['SAMLResponse'] = base64_encode(gzdeflate($plainMessage6));
         $response9 = new OneLogin_Saml2_LogoutResponse($settings, $_GET['SAMLResponse']);

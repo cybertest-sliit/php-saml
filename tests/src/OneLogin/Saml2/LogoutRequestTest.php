@@ -722,12 +722,12 @@ class OneLogin_Saml2_LogoutRequestTest extends PHPUnit_Framework_TestCase
 	isset( $_GET['SAMLRequest'])
 	&& wp_verify_nonce(sanitize_key($_GET['SAMLRequest']), 'SAMLRequest_action')
     ){
-    	$SAMLRequest = $_GET['SAMLRequest'];
+    	$SAMLRequest = sanitize_key($_GET['SAMLRequest']);
     }
         
         
         $request = gzinflate(base64_decode($SAMLRequest);
-        $encodedRequest = $_GET['SAMLRequest'];
+        $encodedRequest =sanitize_key( $_GET['SAMLRequest']);
 
         $logoutRequest = new OneLogin_Saml2_LogoutRequest($this->_settings, $encodedRequest);
         $this->assertTrue($logoutRequest->isValid());
@@ -739,7 +739,7 @@ class OneLogin_Saml2_LogoutRequestTest extends PHPUnit_Framework_TestCase
         $this->assertContains('The LogoutRequest was received at', $logoutRequest2->getError());
 
         $this->_settings->setStrict(false);
-        $oldSignature = $_GET['Signature'];
+        $oldSignature = sanitize_key($_GET['Signature']);
         $_GET['Signature'] = 'vfWbbc47PkP3ejx4bjKsRX7lo9Ml1WRoE5J5owF/0mnyKHfSY6XbhO1wwjBV5vWdrUVX+xp6slHyAf4YoAsXFS0qhan6txDiZY4Oec6yE+l10iZbzvie06I4GPak4QrQ4gAyXOSzwCrRmJu4gnpeUxZ6IqKtdrKfAYRAcVf3333=';
 
         $logoutRequest3 = new OneLogin_Saml2_LogoutRequest($this->_settings, $encodedRequest);
@@ -749,9 +749,9 @@ class OneLogin_Saml2_LogoutRequestTest extends PHPUnit_Framework_TestCase
 
             if(
 	isset( $_GET['SigAlg'])
-	&& wp_verify_nonce($_GET['SigAlg'], 'SigAlg_action')
+	&& wp_verify_nonce(sanitize_key($_GET['SigAlg']), 'SigAlg_action')
     ){
-    	$SigAlg = $_GET['SigAlg'];
+    	$SigAlg = sanitize_key($_GET['SigAlg']);
     }                     
         $_GET['Signature'] = $oldSignature;
         $oldSigAlg = $SigAlg;

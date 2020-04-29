@@ -11,7 +11,35 @@ require_once 'settings.php';
 
 $auth = new OneLogin_Saml2_Auth($settingsInfo);
 
-if (isset($_GET['sso'])) {
+if(
+	isset( $_GET['sso'])
+	&& wp_verify_nonce($_GET['sso'], 'sso_action')
+  ){
+  		$sso = $_GET['sso'];
+  }
+
+if(
+	isset( $_GET['sso2'])
+	&& wp_verify_nonce($_GET['sso2'], 'sso2_action')
+  ){
+  		$sso2 = $_GET['sso2'];
+  }
+
+if(
+	isset( $_GET['slo'])
+	&& wp_verify_nonce($_GET['slo'], 'slo_action')
+  ){
+  		$slo = $_GET['slo'];
+  }
+
+if(
+	isset( $_GET['acs'])
+	&& wp_verify_nonce($_GET['acs'], 'acs_action')
+  ){
+  		$acs = $_GET['acs'];
+  }
+
+if ($sso) {
     $auth->login();
 
     # If AuthNRequest ID need to be saved in order to later validate it, do instead
@@ -22,10 +50,10 @@ if (isset($_GET['sso'])) {
     # header('Location: ' . $ssoBuiltUrl);
     # exit();
 
-} else if (isset($_GET['sso2'])) {
+} else if ($sso2) {
     $returnTo = $spBaseUrl.'/demo1/attrs.php';
     $auth->login($returnTo);
-} else if (isset($_GET['slo'])) {
+} else if ($slo)) {
     $returnTo = null;
     $parameters = array();
     $nameId = null;
@@ -58,7 +86,7 @@ if (isset($_GET['sso'])) {
     # header('Location: ' . $sloBuiltUrl);
     # exit();
 
-} else if (isset($_GET['acs'])) {
+} else if ($acs) {
     if (isset($_SESSION) && isset($_SESSION['AuthNRequestID'])) {
         $requestID = $_SESSION['AuthNRequestID'];
     } else {

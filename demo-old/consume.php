@@ -13,9 +13,9 @@ require 'settings.php';
 if (
         isset($_POST['SAMLResponse']) &&
         isset($_POST['nonce']) &&
-		wp_verify_nonce(isset($_SERVER['nonce']), 'SAMLResponse'
+		wp_verify_nonce($_SERVER['nonce'], 'SAMLResponse'
 ){
-	$SAMLResponse = sanitize_key($_POST['SAMLResponse'])
+	$SAMLResponse = $_POST['SAMLResponse']
 }
 $samlResponse = new OneLogin_Saml_Response($settings, $SAMLResponse)
 
